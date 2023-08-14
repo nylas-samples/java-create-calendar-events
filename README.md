@@ -2,8 +2,6 @@
 
 This sample will show you to create calendar events using the Nylas Java SDK.
 
-## Setup
-
 ### System dependencies
 
 - Java 18.0.2
@@ -14,7 +12,8 @@ This sample will show you to create calendar events using the Nylas Java SDK.
 You'll need the following values:
 
 ```text
-ACCESS_TOKEN = ""
+V3_TOKEN = ""
+NYLAS_API_SERVER = ""
 CALENDAR_ID = ""
 ```
 
@@ -28,8 +27,8 @@ $ touch .env # Then add your env variables
 
 ```bash
 org.slf4j / slf4j-simple / 1.7.25
-com.nylas.sdk / nylas-java-sdk / 1.15.0
-io.github.cdimascio / dotenv-java / 2.2.4
+com.nylas.java / nylas_java / 2.0.0
+io.github.cdimascio / dotenv-java / 2.3.2
 ```
 
 # Compilation
@@ -45,10 +44,16 @@ mvn clean compile
 Run the application using the `maven` command:
 
 ```bash
-$ mvn exec:java -Dexec.mainClass="CreateEvents"
+$ mvn exec:java -Dexec.mainClass="create_calendar_events"
 ```
 
-If successful, all your calendars will be displayed.
+If successful, your event will be created.
+
+
+## Learn more
+
+Read the blog post [How to Manage Calendar Events with the Nylas Java SDK](https://www.nylas.com/blog/how-to-manage-calendar-events-with-the-nylas-java-sdk-dev/)
+Visit our [Nylas Java SDK documentation](https://developer.nylas.com/docs/developer-tools/sdk/java-sdk/) to learn more.
 
 
 ## Learn more
