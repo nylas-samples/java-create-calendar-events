@@ -1,56 +1,57 @@
-//Import Java Utilities
-import java.io.IOException;
+// Import Nylas packages
+import com.nylas.NylasClient;
+
+// Import DotEnv to handle .env files
+import com.nylas.models.*;
+import io.github.cdimascio.dotenv.Dotenv;
+
+// Import Java packages
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
+import java.util.*;
 
-// Import Nylas Packages
-import com.nylas.RequestFailedException;
-import com.nylas.NylasAccount;
-import com.nylas.NylasClient;
-import com.nylas.Event;
-import com.nylas.Participant;
-
-//Import DotEnv to handle .env files
-import io.github.cdimascio.dotenv.Dotenv;
-import io.github.cdimascio.dotenv.DotenvException;
-
-public class CreateEvents {
-    public static void main(String[] args) throws RequestFailedException, IOException {
+public class create_calendar_events {
+    public static void main(String[] args) throws NylasSdkTimeoutError, NylasApiError {
+        // Load the .env file
         Dotenv dotenv = Dotenv.load();
-        // Create the client object
-        NylasClient client = new NylasClient();
-        // Connect it to Nylas using the Access Token from the .env file
-        NylasAccount account = client.account(dotenv.get("ACCESS_TOKEN"));
-
+        // Initialize the Nylas client
+        NylasClient nylas = new NylasClient.Builder(dotenv.get("V3_TOKEN")).baseUrl(dotenv.get("NYLAS_API_SERVER")).build();
         // Get today's date
         LocalDate today = LocalDate.now();
         // Set time. As we're using UTC we need to add the hours in difference
         // from our own Timezone
         Instant sixPmUtc = today.atTime(13, 0).toInstant(ZoneOffset.UTC);
         // Set the date and time for the event. We add 30 minutes to the starting time
-        Event event = new Event(dotenv.get("CALENDAR_ID"),
-                                new Event.Timespan(sixPmUtc,
-                                        sixPmUtc.plus(30, ChronoUnit.MINUTES)));
-        // Set Title, Location and Description
-        event.setTitle("Let's learn some Nylas JAVA SDK!");
-        event.setLocation("Blag's Den!");
-        event.setDescription("Using the Nylas API with the Java SDK is easy. Come join us!");
-
-        // Add participants
-        event.setParticipants(
-            Arrays.asList(new Participant("alvaro.t@nylas.com").name("Blag"))
-        );
-
-        // Create the event. Are we notifying participants? Yes.
-        Event event_created = account.events().create(event, true);
-        if(event_created.getId() != null){
+        Instant sixPmUtcPlus = sixPmUtc.plus(30, ChronoUnit.MINUTES);
+        // Get the Date and Time as Epoch
+        long startTime = sixPmUtc.getEpochSecond();
+        long endTime = sixPmUtcPlus.getEpochSecond();
+        // Define title, location and description of the event
+        String title = "Let's learn some Nylas JAVA SDK!";
+        String location = "Blag's Den!";
+        String description = "Using the Nylas API with the Java SDK is easy. Come join us!\"";
+        // Create the timespan for the event
+        CreateEventRequest.When.Timespan timespan = new CreateEventRequest.When.Timespan.Builder(Math.toIntExact(startTime), Math.toIntExact(endTime)).build();
+        // Create the list of participants
+        List<CreateEventRequest.Participant> participants = Collections.singletonList(new CreateEventRequest.Participant(dotenv.get("CALENDAR_ID"), ParticipantStatus.NOREPLY, "", "", ""));
+        // Build the event details
+        CreateEventRequest createEventRequest = new CreateEventRequest.Builder(timespan)
+                .participants(participants)
+                .title(title)
+                .location(location)
+                .description(description)
+                .build();
+        // Build the event parameters, in this case, the Calendar Id
+        CreateEventQueryParams createEventQueryParams = new CreateEventQueryParams.Builder(dotenv.get("CALENDAR_ID")).build();
+        // Create the event itself
+        Event event = nylas.events().create(dotenv.get("CALENDAR_ID"), createEventRequest, createEventQueryParams).getData();
+        // Did we have a problem or could we create the event?
+        if(!event.getId().equals("")){
             System.out.println("Event created successfully");
         }else{
             System.out.println("There was an error creating the event");
         }
-
     }
 }
