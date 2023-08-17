@@ -17,7 +17,7 @@ public class create_calendar_events {
         // Load the .env file
         Dotenv dotenv = Dotenv.load();
         // Initialize the Nylas client
-        NylasClient nylas = new NylasClient.Builder(dotenv.get("V3_TOKEN")).baseUrl(dotenv.get("NYLAS_API_SERVER")).build();
+        NylasClient nylas = new NylasClient.Builder(dotenv.get("V3_TOKEN")).apiUri(dotenv.get("NYLAS_API_SERVER")).build();
         // Get today's date
         LocalDate today = LocalDate.now();
         // Set time. As we're using UTC we need to add the hours in difference
