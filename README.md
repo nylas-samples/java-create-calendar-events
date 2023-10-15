@@ -54,9 +54,3 @@ If successful, your event will be created.
 
 Read the blog post [How to Manage Calendar Events with the Nylas Java SDK](https://www.nylas.com/blog/how-to-manage-calendar-events-with-the-nylas-java-sdk-dev/)
 Visit our [Nylas Java SDK documentation](https://developer.nylas.com/docs/developer-tools/sdk/java-sdk/) to learn more.
-
-
-## Learn more
-
-Read the blog post [How to Manage Calendar Events with the Nylas Java SDK](https://www.nylas.com/blog/how-to-manage-calendar-events-with-the-nylas-java-sdk-dev/)
-Visit our [Nylas Java SDK documentation](https://developer.nylas.com/docs/developer-tools/sdk/java-sdk/) to learn more.
